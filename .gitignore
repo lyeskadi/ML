@@ -1,0 +1,5 @@
+*.gz
+*ubyte*
+tutorial/data/
+MNIST/
+
