@@ -2,4 +2,5 @@
 *ubyte*
 tutorial/data/
 MNIST/
+*.png
 

@@ -22,6 +22,8 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 import matplotlib.pyplot as plt
 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"Using {device} device")
 
 training_data = datasets.MNIST(
     root="data",
@@ -65,7 +67,7 @@ class CNN(nn.Module):
         x = self.classifier(x)
         return x
 
-model = CNN()
+model = CNN().to(device)
 
 
 ####### Define training and testing loops
@@ -75,6 +77,9 @@ def train_loop(dataloader, model, loss_fn, optimizer):
     # Unnecessary in this situation but added for best practices
     model.train()
     for batch, (X, y) in enumerate(dataloader):
+        
+        X, y = X.to(device), y.to(device)
+        
         # Compute prediction and loss
         pred = model(X)
         loss = loss_fn(pred, y)
@@ -101,6 +106,7 @@ def test_loop(dataloader, model, loss_fn):
     # also serves to reduce unnecessary gradient computations and memory usage for tensors with requires_grad=True
     with torch.no_grad():
         for X, y in dataloader:
+            X, y = X.to(device), y.to(device)
             pred = model(X)
             test_loss += loss_fn(pred, y).item()
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
@@ -114,7 +120,7 @@ def test_loop(dataloader, model, loss_fn):
 
 learning_rate = 1e-3
 batch_size = 64
-epochs = 2
+epochs = 10
 
 # Initialize the loss function
 loss_fn = nn.CrossEntropyLoss()

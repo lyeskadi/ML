@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Nov 15 16:35:57 2025
+Created on Sun Nov 16 13:42:44 2025
 
 @author: lyes
 """
@@ -42,6 +42,8 @@ class NeuralNetwork(nn.Module):
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(28*28, 512),
+            nn.ReLU(),
+            nn.Linear(512, 512),
             nn.ReLU(),
             nn.Linear(512, 512),
             nn.ReLU(),
@@ -140,4 +142,4 @@ plt.axis("off")
 plt.show()
 
 ######## Save model
-torch.save(model.state_dict(), 'model_weights_digits.pth')
+torch.save(model.state_dict(), 'model_weights_digits_3layers.pth')

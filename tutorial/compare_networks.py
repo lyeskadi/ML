@@ -14,6 +14,9 @@ from torchvision.transforms import ToTensor
 import torchvision.models as models
 import matplotlib.pyplot as plt
 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"Using {device} device")
+
 # Load MNIST data
 test_data = datasets.MNIST(
     root="data",
@@ -41,7 +44,7 @@ class NeuralNetwork(nn.Module):
         logits = self.linear_relu_stack(x)
         return logits
 
-model_MLP = NeuralNetwork()
+model_MLP = NeuralNetwork().to(device)
 
 class CNN(nn.Module):
     def __init__(self):
@@ -68,7 +71,7 @@ class CNN(nn.Module):
         x = self.classifier(x)
         return x
 
-model_CNN = CNN()
+model_CNN = CNN().to(device)
 
 # Load models
 model_MLP.load_state_dict(torch.load('model_weights_digits.pth'))
@@ -88,6 +91,7 @@ def test_loop(dataloader, model, loss_fn):
     # also serves to reduce unnecessary gradient computations and memory usage for tensors with requires_grad=True
     with torch.no_grad():
         for X, y in dataloader:
+            X, y = X.to(device), y.to(device)
             pred = model(X)
             test_loss += loss_fn(pred, y).item()
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()

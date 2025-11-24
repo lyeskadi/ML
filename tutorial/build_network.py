@@ -13,7 +13,6 @@ from torchvision import datasets, transforms
 
 device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
 print(f"Using {device} device")
-
 # Define model
 class NeuralNetwork(nn.Module):
     def __init__(self):
